@@ -1,0 +1,5 @@
+markdown_content = "/home/matt/stephs-website/content"
+static_files = "/home/matt/stephs-website/static"
+templates = "/home/matt/stephs-website/templates"
+serve = "/home/matt/stephs-website/serve"
+sitemap = "/home/matt/stephs-website/sitemap.json"
