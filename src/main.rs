@@ -1,3 +1,4 @@
+use clap::Parser;
 use serde::{Deserialize, Serialize};
 use toml;
 
@@ -71,8 +72,16 @@ fn copy_static_to_serve(src: &std::path::Path, dst: &std::path::Path) -> std::io
     Ok(())
 }
 
+#[derive(clap::Parser)]
+struct Args {
+    #[arg(long, default_value = "config.toml")]
+    config: std::path::PathBuf,
+}
+
 fn main() {
-    let config = parse_config("config.toml").expect("Failed to parse config");
+    let args = Args::parse();
+    let config_path = args.config.to_str().unwrap();
+    let config = parse_config(config_path).expect("Failed to parse config");
     let mut tera = tera::Tera::new(&format!("{}/**/*", config.templates)).expect("Failed to parse templates");
     tera.autoescape_on(vec![]);
     let sitemap = parse_sitemap(&config.sitemap).expect("Failed to parse sitemap");

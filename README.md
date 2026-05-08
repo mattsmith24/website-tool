@@ -9,7 +9,7 @@ database.
 
 ## Configuration
 
-Edit `config.toml` like this:
+Create a `config.toml` like this:
 
 ```toml
 markdown_content = "path/to/markdown/content"
@@ -21,7 +21,28 @@ sitemap = "path/to/sitemap.json"
 
 ## Creating content
 
+### Page Contents
+
 Write content for pages as markdown in `markdown_content`.
+
+For more info about markdown, read the [markdown
+website](https://www.markdownguide.org/)
+
+### Static Files
+
+Files like images, css etc should be saved in `static_files`.
+
+### Templates
+
+Create a template in `templates` using the [Tera
+format](https://keats.github.io/tera/).
+
+The variables made available to the template are set in the sitemap (see below).
+
+Variables: `title`, `path` and `basename` for the current page are set in the
+context as well as the full `pages` structure for building navigation.
+
+### Sitemap
 
 Create a `sitemap.json` like this:
 
@@ -65,7 +86,7 @@ file is named `welcome.md`, put "welcome" in this field. It will be served as
 ## Usage
 
 ```shell
-cargo run
+cargo run -- --config path/to/config.toml
 ```
 
 ## How It Works
