@@ -42,6 +42,9 @@ The variables made available to the template are set in the sitemap (see below).
 Variables: `title`, `path` and `basename` for the current page are set in the
 context as well as the full `pages` structure for building navigation.
 
+A variable `selected` is set to the current page with path for use in
+highlighting the current page in the menu.
+
 ### Sitemap
 
 Create a `sitemap.json` like this:
