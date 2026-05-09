@@ -39,11 +39,12 @@ format](https://keats.github.io/tera/).
 
 The variables made available to the template are set in the sitemap (see below).
 
-Variables: `title`, `path` and `basename` for the current page are set in the
+Variables: `title`, `menu`, `path` and `basename` for the current page are set in the
 context as well as the full `pages` structure for building navigation.
 
-A variable `selected` is set to the current page with path for use in
-highlighting the current page in the menu.
+For navigation of the heirarchy, a `breadcrumbs` field is an array of pages
+starting at the base page and then each sub page in the hierarchy up to the
+current page.
 
 ### Sitemap
 

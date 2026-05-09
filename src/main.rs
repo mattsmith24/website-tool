@@ -36,13 +36,14 @@ pub fn parse_sitemap(path: &str) -> Result<Sitemap, serde_json::Error> {
     serde_json::from_str(&content)
 }
 
-fn build_context(sitemap: &Sitemap, content: &str, page: &Page) -> tera::Context {
+fn build_context(sitemap: &Sitemap, content: &str, page: &Page, breadcrumbs: &Vec<&Page>) -> tera::Context {
     let mut ctx = tera::Context::new();
     ctx.insert("title", &page.title);
+    ctx.insert("menu", &page.menu);
     ctx.insert("content", content);
     ctx.insert("pages", &sitemap.pages);
     ctx.insert("subpages", &page.subpages);
-    ctx.insert("selected", format!("{}{}", &page.path, &page.basename).as_str());
+    ctx.insert("breadcrumbs", &breadcrumbs);
     ctx
 }
 
@@ -88,10 +89,10 @@ struct Args {
     config: std::path::PathBuf,
 }
 
-fn render_page(page: &Page, config: &Config, sitemap: &Sitemap, tera: &tera::Tera) {
+fn render_page(page: &Page, config: &Config, sitemap: &Sitemap, tera: &tera::Tera, breadcrumbs: Vec<&Page>) {
     let file_path = build_path(&config.markdown_content, "md", &page);
     let html_content = render_markdown_file(&file_path);
-    let ctx = build_context(&sitemap, &html_content, &page);
+    let ctx = build_context(&sitemap, &html_content, &page, &breadcrumbs);
     let rendered = tera.render(&page.template, &ctx).unwrap();
     let out_dirpath = build_dirpath(&config.serve, &page);
     let exists = std::fs::exists(&out_dirpath).expect("Unable to use directory");
@@ -101,7 +102,9 @@ fn render_page(page: &Page, config: &Config, sitemap: &Sitemap, tera: &tera::Ter
     let out_path = build_path(&config.serve, "html", &page);
     std::fs::write(&out_path, &rendered).expect("Failed to write file");
     for subpage in &page.subpages {
-        render_page(&subpage, &config, &sitemap, &tera)
+        let mut breadcrumbs = breadcrumbs.clone();
+        breadcrumbs.push(&subpage);
+        render_page(&subpage, &config, &sitemap, &tera, breadcrumbs)
     }
 }
 
@@ -113,7 +116,8 @@ fn main() {
     tera.autoescape_on(vec![]);
     let sitemap = parse_sitemap(&config.sitemap).expect("Failed to parse sitemap");
     for page in &sitemap.pages {
-        render_page(&page, &config, &sitemap, &tera)
+        let breadcrumbs = vec![page];
+        render_page(&page, &config, &sitemap, &tera, breadcrumbs)
     }
     copy_static_to_serve(
         std::path::Path::new(&config.static_files),
