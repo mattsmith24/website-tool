@@ -53,21 +53,33 @@ Create a `sitemap.json` like this:
 {
     "pages": [
         {
-            "title": "Main",
-            "menu": "Main",
+            "title": "Home",
+            "menu": "Home",
             "path": "/",
             "basename": "index",
-            "template": "main.html"
+            "template": "main.html",
+            "subpages": []
         },
         {
-            "title": "This is the \"About\"' page, isn't it cool?",
-            "menu": "About",
+            "title": "Blog",
+            "menu": "Blog",
             "path": "/",
-            "basename": "about",
-            "template": "main.html"
+            "basename": "blog",
+            "template": "blog.html",
+            "subpages": [
+                {
+                    "title": "Something something blah",
+                    "menu": "Something",
+                    "path": "/blog/2026/",
+                    "basename": "0509-something",
+                    "template": "blogpost.html",
+                    "subpages": []
+                }
+            ]
         }
     ]
 }
+
 ```
 
 The fields have these meanings:
@@ -85,6 +97,8 @@ file is named `welcome.md`, put "welcome" in this field. It will be served as
 
 **template** - Name of the template file under `templates`.
 
+The paths and basenames can be whatever you want. The blog example is just my
+system.
 
 ## Usage
 
