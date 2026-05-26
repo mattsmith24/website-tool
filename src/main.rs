@@ -65,7 +65,14 @@ fn build_dirpath(basepath: &str, page: &Page) -> String {
 
 fn render_markdown_file(path: &str) -> String {
     let content = std::fs::read_to_string(path).expect("Failed to read file");
-    markdown::to_html(&content)
+    markdown::to_html_with_options(&content, &markdown::Options {
+        compile: markdown::CompileOptions {
+            allow_dangerous_html: true,
+            allow_dangerous_protocol: true,
+            ..markdown::CompileOptions::default()
+        },
+        ..markdown::Options::default()
+    }).expect("Failed to compile markdown")
 }
 
 

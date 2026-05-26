@@ -799,18 +799,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "stephs-website"
-version = "0.1.0"
-dependencies = [
- "clap",
- "markdown",
- "serde",
- "serde_json",
- "tera",
- "toml",
-]
-
-[[package]]
 name = "strsim"
 version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -989,6 +977,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "49757b3c82ebf16c57d69365a142940b384176c24df52a087fb748e2085359ea"
 dependencies = [
  "unicode-ident",
+]
+
+[[package]]
+name = "website-tool"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "markdown",
+ "serde",
+ "serde_json",
+ "tera",
+ "toml",
 ]
 
 [[package]]
