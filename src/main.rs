@@ -63,17 +63,16 @@ fn build_dirpath(basepath: &str, page: &Page) -> String {
     }
 }
 
-fn render_markdown_file(path: &str) -> String {
+mod render;
+
+use render::{apply_syntax_highlighting, compile_html_content_tree};
+
+fn parse_markdown_file(path: &str) -> markdown::mdast::Node {
     let content = std::fs::read_to_string(path).expect("Failed to read file");
-    markdown::to_html_with_options(&content, &markdown::Options {
-        compile: markdown::CompileOptions {
-            allow_dangerous_html: true,
-            allow_dangerous_protocol: true,
-            ..markdown::CompileOptions::default()
-        },
-        ..markdown::Options::default()
-    }).expect("Failed to compile markdown")
+    markdown::to_mdast(&content, &markdown::ParseOptions::default())
+        .expect("Failed to parse markdown")
 }
+
 
 
 fn copy_static_to_serve(src: &std::path::Path, dst: &std::path::Path) -> std::io::Result<()> {
@@ -98,7 +97,9 @@ struct Args {
 
 fn render_page(page: &Page, config: &Config, sitemap: &Sitemap, tera: &tera::Tera, breadcrumbs: Vec<&Page>) {
     let file_path = build_path(&config.markdown_content, "md", &page);
-    let html_content = render_markdown_file(&file_path);
+    let mut html_content_tree = parse_markdown_file(&file_path);
+    apply_syntax_highlighting(&mut html_content_tree);
+    let html_content = compile_html_content_tree(&html_content_tree);
     let ctx = build_context(&sitemap, &html_content, &page, &breadcrumbs);
     let rendered = tera.render(&page.template, &ctx).unwrap();
     let out_dirpath = build_dirpath(&config.serve, &page);
